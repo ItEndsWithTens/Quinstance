@@ -1,0 +1,83 @@
+// Bundled with Quinstance
+// https://github.com/ItEndsWithTens/Quinstance
+//
+// The combination of Quinstance and VMFII is what allows the func_instance
+// entity to work in Quake maps, but for convenience of mapping you'll want to
+// use this FGD. Either add it to the list of those your editor loads, if you
+// can, or just copy the appropriate block into the FGD you're already using.
+//
+// You do not need to pass this FGD into Quinstance with -d/--fgd! VMFII already
+// understands how to treat func_instance entities.
+//
+// http://www.gyroshot.com
+// robert.martens@gmail.com
+// @ItEndsWithTens
+//
+// October 18th, 2015
+
+
+// Jackhammer
+//
+// JH is the editor I use most often, and version 1.1.700 is where I've done
+// most of my testing so far. Other editors may or may not be able to load this
+// file, so please be prepared for failure!
+
+@PointClass size( -8 -8 -8, 8 8 8 ) flags(Angle) = func_instance : "An automatically updated prefab. " +
+  "Set Filename to the name of a .map containing geometry and/or entities you'd like to duplicate at " +
+  "various locations in this map. Position and orient this func_instance in any way you like, and on " +
+  "compile the map referenced herein will be collapsed into this map. Use for common architectural " +
+  "elements, repetitive entity configurations, building on grid but positioning off grid while " +
+  "maintaining ease of editing, etc."
+[
+  angles(angle) : "Pitch Yaw Roll (Y Z X)" : "0 0 0" : "This entity's orientation."
+	targetname(target_source) : "Fixup Name" : : "A name that will, depending on the fixup style, be prepended or appended to any entities. If a Fixup Style is set, but a Fixup Name is not provided, an automatically generated name will be used. Keep in mind that even with fixup enabled and a name set, you can selectively avoid fixup by giving entities names starting with @."
+	file(string) : "Filename" : : "A path, relative to the current map file's location, pointing to the map you'd like to copy in."
+	fixup_style(Choices) : "Fixup Style" : 0 : "The method by which entity names will be fixed up." =
+	[
+		0 : "Prefix"
+		1 : "Postfix"
+		2 : "None"
+	]
+
+	replace01(string) : "Replace" : : "A replacement parameter that takes the form of $variable value. For example, set this field to $brightness 750 and any occurrence of $brightness inside the Filename map will be replaced with 750 when the instances are collapsed."
+	replace02(string) : "Replace" : : "Materials can also be replaced, with #. For example, setting a replacement variable to #SKY1 DOPEFISH will retexture any surfaces in the Filename map, replacing the classic purple sky with everyone's favorite goofy fish."
+	replace03(string) : "Replace" : : ""
+	replace04(string) : "Replace" : : ""
+	replace05(string) : "Replace" : : ""
+	replace06(string) : "Replace" : : ""
+	replace07(string) : "Replace" : : ""
+	replace08(string) : "Replace" : : ""
+	replace09(string) : "Replace" : : ""
+	replace10(string) : "Replace" : : "If you need more than ten replacements, don't forget you can turn off SmartEdit (if applicable) and add keys manually: replace11, replace12, etc."
+]
+
+
+// TrenchBroom
+//
+// TB doesn't support the same FGD format that Jackhammer does, and only allows
+// one FGD per map, so if you want to use instances there you'll need to copy
+// the block below into TrenchBroom/Resources/Defs/Quake.fgd and uncomment it.
+// Please note that this has not undergone extensive testing!
+
+//@PointClass size( -8 -8 -8, 8 8 8 ) = func_instance : "An automatically updated prefab. Set Filename to the name of a .map containing geometry and/or entities you'd like to duplicate at various locations in this map. Position and orient this func_instance in any way you like, and on compile the map referenced herein will be collapsed into this map. Use for common architectural elements, repetitive entity configurations, building on grid but positioning off grid while maintaining ease of editing, etc."
+//[
+//	targetname(target_source) : "Fixup Name"
+//	file(string) : "Filename"
+//	fixup_style(Choices) : "Fixup Style" : 0 =
+//	[
+//		0 : "Prefix"
+//		1 : "Postfix"
+//		2 : "None"
+//	]
+//
+//	replace01(string) : "Replace" : ""
+//  replace02(string) : "Replace" : ""
+//	replace03(string) : "Replace" : ""
+//	replace04(string) : "Replace" : ""
+//	replace05(string) : "Replace" : ""
+//	replace06(string) : "Replace" : ""
+//	replace07(string) : "Replace" : ""
+//	replace08(string) : "Replace" : ""
+//	replace09(string) : "Replace" : ""
+//	replace10(string) : "Replace" : ""
+//]
