@@ -91,7 +91,14 @@ namespace Quinstance
             Console.WriteLine("done!");
 
             Console.Write("Preprocessing map and instances...");
-            PreprocessMap(map_in);
+            try {
+                PreprocessMap(map_in);
+            }
+            catch (InvalidDataException e) {
+                Console.Write("error: ");
+                Console.WriteLine(e.Message);
+                return;
+            }
             Console.WriteLine("done!");
 
             CollapseInstances(map_preprocessed, fgds.Select(x => tmp_path + sep + Path.GetFileName(x)).ToList());
@@ -263,22 +270,6 @@ namespace Quinstance
 
             if (!File.Exists(paths[0]))
                 throw new System.ArgumentException("Input file not found!");
-
-            // Reading input more than once is ugly, perhaps, but PreprocessMap
-            // calls itself recursively, and loads its own files, so if we want
-            // to check the version up here, we need to read some of the map.
-            string mapversion = "";
-            using (StreamReader sr = File.OpenText(paths[0])) {
-                while (!sr.EndOfStream) {
-                    string line = sr.ReadLine().Trim();
-                    if (line.StartsWith("\"mapversion\"")) {
-                        mapversion = line.Split('"')[3].Trim();
-                        break;
-                    }
-                }
-            }
-            if (mapversion != "220")
-                throw new InvalidDataException("Unsupported .map version (expected Valve 220)!");
         }
 
         static void PreprocessFgd(string fgd)
@@ -381,6 +372,19 @@ namespace Quinstance
             // at the next line without consuming it, so instead of going line
             // by line with a StreamReader we just prepare a list of strings.
             List<string> lines_in = File.ReadAllLines(map_in).ToList();
+
+            // We need to check each map individually, since any of them could
+            // be in an unsupported format. Better not to silently or even
+            // quietly let some maps go unprocessed, just quit.
+            string mapversion = "";
+            foreach (string line in lines_in) {
+                if (line.Trim().StartsWith("\"mapversion\"")) {
+                    mapversion = line.Trim().Split('"')[3].Trim();
+                    break;
+                }
+            }
+            if (mapversion != "220")
+                throw new InvalidDataException("Unsupported .map version! Expected Valve 220, got \"" + mapversion + "\" from " + map_in);
 
             List<string> lines_out = new List<string>();
             lines_out.Add("world");
