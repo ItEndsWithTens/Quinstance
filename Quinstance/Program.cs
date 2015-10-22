@@ -252,8 +252,6 @@ namespace Quinstance
                         case "-t":
                         case "--tmpdir":
                             tmp_path = args[++i];
-                            if (!Directory.Exists(tmp_path))
-                                throw new System.ArgumentException("Specified temp directory doesn't exist!");
                             break;
                         default:
                             throw new System.ArgumentException("Unrecognized parameter!");
