@@ -387,20 +387,22 @@ namespace Quinstance
                 throw new InvalidDataException("Unsupported .map version! Expected Valve 220, got \"" + mapversion + "\" from " + map_in);
 
             List<string> lines_out = new List<string>();
-            lines_out.Add("world");
-            lines_out.Add("{");
-
-            // Starting from 1 skips over Quake maps' first open brace, which
-            // would otherwise turn worldspawn into its own 'entity' block.
-            for (int i = 1; i < lines_in.Count; ++i) {
+            for (int i = 0; i < lines_in.Count; ++i) {
                 string line_in = lines_in[i],
                        trimmed = line_in.Trim();
 
+                if (trimmed == "")
+                    continue;
+
                 if (trimmed == "{") {
-                    if (lines_in[i + 1].Trim().StartsWith("\"")) {
+                    string line_next = lines_in[i + 1].Trim();
+                    if (line_next.EndsWith("\"worldspawn\"") && line_next.StartsWith("\"classname\"")) {
+                        lines_out.Add("world");
+                        lines_out.Add(line_in);
+                    } else if (line_next.StartsWith("\"")) {
                         lines_out.Add("entity");
                         lines_out.Add(line_in);
-                    } else if (lines_in[i + 1].Trim().StartsWith("(")) {
+                    } else if (line_next.StartsWith("(")) {
                         lines_out.Add("solid");
                         lines_out.Add(line_in);
                     }
