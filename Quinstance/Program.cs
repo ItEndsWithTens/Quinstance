@@ -394,50 +394,51 @@ namespace Quinstance
                 if (trimmed == "")
                     continue;
 
+                Regex regex_indent = new Regex(@"(\s*?)\S+");
+                string indent = regex_indent.Match(line_in).Groups[1].ToString();
+
                 if (trimmed == "{") {
                     string line_next = lines_in[i + 1].Trim();
                     if (line_next.EndsWith("\"worldspawn\"") && line_next.StartsWith("\"classname\"")) {
-                        lines_out.Add("world");
-                        lines_out.Add(line_in);
+                        lines_out.Add(indent + "world");
+                        lines_out.Add(indent + line_in);
                     } else if (line_next.StartsWith("\"")) {
-                        lines_out.Add("entity");
-                        lines_out.Add(line_in);
+                        lines_out.Add(indent + "entity");
+                        lines_out.Add(indent + line_in);
                     } else if (line_next.StartsWith("(")) {
-                        lines_out.Add("solid");
-                        lines_out.Add(line_in);
+                        lines_out.Add(indent + "solid");
+                        lines_out.Add(indent + line_in);
                     }
                 } else if (trimmed.StartsWith("(")) {
-                    lines_out.Add("side");
-                    lines_out.Add("{");
+                    lines_out.Add(indent + "side");
+                    lines_out.Add(indent + "{");
 
-                    Regex qSideRegex = new Regex("(\\s*?)(\\(.+\\))\\s(\\S+?)\\s(\\[.+?\\])\\s(\\[.+?\\])\\s(\\S+?)\\s(\\S+?)\\s(\\S+)");
+                    Regex regex_side = new Regex("\\s*?(\\(.+\\))\\s(\\S+?)\\s(\\[.+?\\])\\s(\\[.+?\\])\\s(\\S+?)\\s(\\S+?)\\s(\\S+)");
 
-                    string indent = qSideRegex.Match(line_in).Groups[1].ToString();
-
-                    string plane = qSideRegex.Match(line_in).Groups[2].ToString();
+                    string plane = regex_side.Match(line_in).Groups[1].ToString();
                     plane = plane.Replace("( ", "(").Replace(" )", ")");
 
-                    string material = qSideRegex.Match(line_in).Groups[3].ToString();
+                    string material = regex_side.Match(line_in).Groups[2].ToString();
 
-                    string uaxis = qSideRegex.Match(line_in).Groups[4].ToString();
+                    string uaxis = regex_side.Match(line_in).Groups[3].ToString();
                     uaxis = uaxis.Replace("[ ", "[").Replace(" ]", "]");
 
-                    string vaxis = qSideRegex.Match(line_in).Groups[5].ToString();
+                    string vaxis = regex_side.Match(line_in).Groups[4].ToString();
                     vaxis = vaxis.Replace("[ ", "[").Replace(" ]", "]");
 
-                    string rotation = qSideRegex.Match(line_in).Groups[6].ToString();
+                    string rotation = regex_side.Match(line_in).Groups[5].ToString();
 
-                    string uscale = qSideRegex.Match(line_in).Groups[7].ToString(),
-                           vscale = qSideRegex.Match(line_in).Groups[8].ToString();
+                    string uscale = regex_side.Match(line_in).Groups[6].ToString(),
+                           vscale = regex_side.Match(line_in).Groups[7].ToString();
                     uaxis += " " + uscale;
                     vaxis += " " + vscale;
 
-                    lines_out.Add(indent + "\"plane\" \"" + plane + "\"");
-                    lines_out.Add(indent + "\"material\" \"" + material + "\"");
-                    lines_out.Add(indent + "\"uaxis\" \"" + uaxis + "\"");
-                    lines_out.Add(indent + "\"vaxis\" \"" + vaxis + "\"");
-                    lines_out.Add(indent + "\"rotation\" \"" + rotation + "\"");
-                    lines_out.Add("}");
+                    lines_out.Add(indent + indent + "\"plane\" \"" + plane + "\"");
+                    lines_out.Add(indent + indent + "\"material\" \"" + material + "\"");
+                    lines_out.Add(indent + indent + "\"uaxis\" \"" + uaxis + "\"");
+                    lines_out.Add(indent + indent + "\"vaxis\" \"" + vaxis + "\"");
+                    lines_out.Add(indent + indent + "\"rotation\" \"" + rotation + "\"");
+                    lines_out.Add(indent + "}");
                 } else {
                     if (trimmed.StartsWith("\"file\"") && trimmed.Contains(".map")) {
                         line_in = line_in.Replace(".map", ".vmf");
