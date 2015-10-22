@@ -4,10 +4,13 @@ Quinstance 0.1.0
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
 Quake maps.
 
-Requires a .map in Valve 220 format, and one or more FGDs describing the
-entities found therein. Additionally, use in Windows will need version 4 or
-later of the .NET Framework, while Linux and OS X usage depends on an
-installation of Mono: http://www.mono-project.com
+Requirements
+Windows: .NET Framework version 4 or later, http://www.microsoft.com/net
+Linux/OSX: Mono, http://www.mono-project.com
+
+Additionally, your map must be in the Valve 220 format, and you'll need one or
+more FGDs describing the entities found therein. Any standard Quake FGD you can
+find should work, but please let me know if you have trouble.
 
 My thanks to James King, "Metapyziks", for both the development of VMFII in the
 first place and for the flexible license terms that let me redistribute a copy
@@ -109,7 +112,8 @@ Place a func_instance in your map at whatever position and orientation you'd
 like. Set the entity's Filename key to the relative path of another map,
 containing geometry and/or entities, and see that after being run through
 Quinstance and compiled, a copy of the other map's contents will have appeared
-where the func_instance once was.
+where the func_instance once was, offset from the entity by the same amount they
+were offset from their map's origin.
 
 
 func_instance
@@ -118,12 +122,12 @@ func_instance
 key - Display Name - type, default
   Description.
 
-targetname - Fixup Name - target_source, default AutoInstanceX
+targetname - Fixup Name - target_source, default "AutoInstanceX"
   A name that will, depending on the fixup style, be prepended or appended to
   any entities. If a Fixup Style is set, but a Fixup Name is not provided, an
   automatically generated name will be used. Keep in mind that even with fixup
   enabled and a name set, you can selectively avoid fixup by giving entities
-  names starting with @.
+  names starting with the @ symbol.
 
 file - Filename - string, default ""
   A path, relative to the current map file's location, pointing to the map you'd
@@ -135,14 +139,14 @@ fixup_style - Fixup Style - integer, default 0
   1 : Postfix
   2 : None
 
-replace0X - Replace - string, default ""
+replaceXX - Replace - string, default ""
   A replacement parameter that takes the form of $variable value. For example,
   set this field to $brightness 750 and any occurrence of $brightness inside the
   Filename map will be replaced with 750 when the instances are collapsed.
-  Materials can also be replaced, with #. For example, setting a replacement
-  variable to #SKY1 DOPEFISH will retexture any surfaces in the Filename map,
-  replacing the classic purple sky with everyone's favorite goofy fish.
-  If you need more than ten replacements, don't forget you can turn off
+  Materials can also be replaced, with the # symbol. For example, setting a
+  replacement variable to #SKY1 DOPEFISH will retexture any surfaces in the
+  Filename map, replacing the classic purple sky with everyone's favorite goofy
+  fish. If you need more than ten replacements, don't forget you can turn off
   SmartEdit (if applicable) and add keys manually: replace11, replace12, etc.
 
 For more information about func_instances as they're implemented in the Source
