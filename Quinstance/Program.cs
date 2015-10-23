@@ -72,12 +72,12 @@ namespace Quinstance
                 File.Delete(tmp_path + sep + exe_name + "_access_check");
             }
             catch (UnauthorizedAccessException) {
-                Console.WriteLine("Couldn't access temp directory! Please use -t to specify another.");
+                Console.WriteLine("Couldn't access temp directory " + tmp_path + "! Please use -t to specify another.");
                 PrintUsage();
                 return;
             }
             catch (IOException) {
-                Console.WriteLine("Couldn't access temp directory! Please use -t to specify another.");
+                Console.WriteLine("Couldn't access temp directory " + tmp_path + "! Please use -t to specify another.");
                 PrintUsage();
                 return;
             }
