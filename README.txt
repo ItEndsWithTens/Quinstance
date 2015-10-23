@@ -1,4 +1,4 @@
-Quinstance 0.1.0
+Quinstance 0.2.0
 ================
 
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
@@ -8,9 +8,9 @@ Requirements
 Windows: .NET Framework version 4 or later, http://www.microsoft.com/net
 Linux/OSX: Mono, http://www.mono-project.com
 
-Additionally, your map must be in the Valve 220 format, and you'll need one or
-more FGDs describing the entities found therein. Any standard Quake FGD you can
-find should work, but please let me know if you have trouble.
+Additionally, your map must be in either the QuakeEd or Valve 220 formats, and
+you'll need one or more FGDs describing the entities found therein. Any standard
+Quake FGD you can find should work, but please let me know if you have trouble.
 
 My thanks to James King, "Metapyziks", for both the development of VMFII in the
 first place and for the flexible license terms that let me redistribute a copy
@@ -32,7 +32,8 @@ Usage
     Parameters:
 
       input
-        The input file to be processed. Must be a Quake .map in Valve 220 format.
+        The input file to be processed. Must be a Quake .map in either classic
+        QuakeEd or Valve 220 formats.
 
       output [optional]
         The file to output after processing. Defaults to input.temp.map.
@@ -155,6 +156,9 @@ engine, see https://developer.valvesoftware.com/wiki/Func_instance
 
 Changes
 -------
+
+0.2.0 - October 23rd, 2015
+  Add QuakeEd format support
 
 0.1.0 - October 19th, 2015
   Initial release

@@ -1,4 +1,5 @@
 ﻿using Quinstance;
+using Quinstance.Quin3d;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -222,6 +223,93 @@ namespace Quinstance
             deletables["files"].Add(map_out.Replace(".vmf", ".temp.vmf"));
         }
 
+        static List<string> ConvertQuakeEdTo220(List<string> lines_in)
+        {
+            List<string> lines_out = new List<string>();
+
+            // The order of planes here is specifically designed to match up
+            // with the texture orientation results provided by editors and
+            // compilers. First -Z and its normal-flipped counterpart, then -X
+            // and its alternative, but then switching signs to +Y since we're
+            // using a right-handed coordinate system.
+            List<Plane> cardinals = new List<Plane>() {
+                new Plane("(0 0 0) (1 0 0) (0 -1 0)"), // XY, normal points toward -Z
+                new Plane("(0 0 0) (1 0 0) (0 -1 0)", true),
+                new Plane("(0 0 0) (0 1 0) (0 0 -1)"), // YZ, normal points toward -X
+                new Plane("(0 0 0) (0 1 0) (0 0 -1)", true),
+                new Plane("(0 0 0) (1 0 0) (0 0 -1)"), // ZX, normal points toward +Y
+                new Plane("(0 0 0) (1 0 0) (0 0 -1)", true)};
+
+            for (int i = 0; i < lines_in.Count; ++i) {
+                string line_in = Quinstance.Util.StripComment(lines_in[i]);
+                string trimmed = line_in.Trim();
+                if (!trimmed.StartsWith("(")) {
+                    if (i > 0 && lines_in[i - 1].Trim().EndsWith("\"worldspawn\""))
+                        lines_out.Add("\"mapversion\" \"220\"");
+                    lines_out.Add(line_in);
+                    continue;
+                }
+                
+                string indent = line_in.Substring(0, line_in.IndexOf('('));
+                Plane p = new Plane(line_in.Substring(line_in.IndexOf('('), line_in.LastIndexOf(')') + 1));
+                char[] texinfo_delims = { ' ' };
+                string[] texinfo = line_in.Substring(line_in.LastIndexOf(')') + 1).Split(texinfo_delims, StringSplitOptions.RemoveEmptyEntries);
+
+                double smallest_angle = 180.0;
+                Plane closest_plane = cardinals[0];
+                foreach (Plane q in cardinals) {
+                    double current_angle = Quin3d.Util.UnsignedAngleBetweenVectors(p.normal, q.normal);
+                    if (current_angle < smallest_angle) {
+                        closest_plane = q;
+                        smallest_angle = current_angle;
+                    }
+                }
+
+                double angle;
+                Double.TryParse(texinfo[3], out angle);
+
+                // TODO: Add something for angle == 0.0!
+
+                double cos = Math.Cos(angle * (System.Math.PI / 180.0)),
+                       sin = Math.Sin(angle * (System.Math.PI / 180.0));
+
+                Matrix3x3 matrix_x = new Matrix3x3(new double[] { 1.0,  0.0,  0.0,
+                                                                  0.0,  cos, -sin,
+                                                                  0.0,  sin,  cos }),
+                                           
+                          matrix_y = new Matrix3x3(new double[] { cos,  0.0,  sin,
+                                                                  0.0,  1.0,  0.0,
+                                                                 -sin,  0.0,  cos }),
+                          
+                          matrix_z = new Matrix3x3(new double[] { cos, -sin,  0.0,
+                                                                  sin,  cos,  0.0,
+                                                                  0.0,  0.0,  1.0 });
+
+                Matrix3x3 matrix = new Matrix3x3();
+
+                // Equality checks for doubles, I know, but in this case the
+                // only possible values of 'closest_plane' will have normals
+                // with exact coordinates. I hope.
+                if (closest_plane.normal.x == 1.0 || closest_plane.normal.x == -1.0)
+                    matrix = matrix_x;
+                else if (closest_plane.normal.y == 1.0 || closest_plane.normal.y == -1.0)
+                    matrix = matrix_y;
+                else
+                    matrix = matrix_z;
+                Point3d rot_b = Quin3d.Util.MulMatrix3x3ByPoint3d(matrix, closest_plane.b);
+                Point3d rot_c = Quin3d.Util.MulMatrix3x3ByPoint3d(matrix, closest_plane.c);
+
+                // Each cardinal plane's vectors are assumed to start at 0 0 0,
+                // which means no need to subtract anything to get the actual
+                // vectors to use here, just throw in the values.
+                lines_out.Add(indent + p.ToString() + ' ' + texinfo[0] + ' ' +
+                              rot_b.ToString().Replace('(', '[').Replace(")", "") + texinfo[1] + " ] " +
+                              rot_c.ToString().Replace('(', '[').Replace(")", "") + texinfo[2] + " ] " +
+                              texinfo[3] + ' ' + texinfo[4] + ' ' + texinfo[5]);
+            }
+            return lines_out;
+        }
+
         static void ParseArgs(ref string[] args, ref List<string> paths, ref List<string> fgds)
         {
             // For users' sake this program is set up to accept the same
@@ -374,15 +462,24 @@ namespace Quinstance
             // We need to check each map individually, since any of them could
             // be in an unsupported format. Better not to silently or even
             // quietly let some maps go unprocessed, just quit.
-            string mapversion = "";
+            string mapversion = "QuakeEd";
             foreach (string line in lines_in) {
                 if (line.Trim().StartsWith("\"mapversion\"")) {
                     mapversion = line.Trim().Split('"')[3].Trim();
                     break;
+                } else if (line.Trim().EndsWith("//TX1")) {
+                    mapversion = "QuArK TX1";
+                    break;
+                } else if (line.Trim().EndsWith("//TX2")) {
+                    mapversion = "QuArK TX2";
+                    break;
                 }
             }
-            if (mapversion != "220")
-                throw new InvalidDataException("Unsupported .map version! Expected Valve 220, got \"" + mapversion + "\" from " + map_in);
+            if (mapversion != "220" && mapversion != "QuakeEd")
+                throw new InvalidDataException("Unsupported .map format! Expected QuakeEd or Valve 220, got \"" + mapversion + "\" from " + map_in);
+
+            if (mapversion == "QuakeEd")
+                lines_in = ConvertQuakeEdTo220(lines_in);
 
             List<string> lines_out = new List<string>();
             for (int i = 0; i < lines_in.Count; ++i) {
@@ -411,7 +508,12 @@ namespace Quinstance
                     lines_out.Add(indent + "side");
                     lines_out.Add(indent + "{");
 
-                    Regex regex_side = new Regex("\\s*?(\\(.+\\))\\s(\\S+?)\\s(\\[.+?\\])\\s(\\[.+?\\])\\s(\\S+?)\\s(\\S+?)\\s(\\S+)");
+                    Regex regex_side = new Regex(@"\s*?" + // Leading space
+                                                 @"(\(.+\))\s+?" + // Plane definition
+                                                 @"(\S+?)\s*?" + // Texture name
+                                                 @"(\[.+?\])\s*?" + // U axis
+                                                 @"(\[.+?\])\s*?" + // V axis
+                                                 @"(\S+)\s+?(\S+)\s+?(\S+)"); // Rotation, scale U, scale V
 
                     string plane = regex_side.Match(line_in).Groups[1].ToString();
                     plane = plane.Replace("( ", "(").Replace(" )", ")");
@@ -485,7 +587,8 @@ namespace Quinstance
                 "Parameters:",
                 "",
                 "  input",
-                "    The input file to be processed. Must be a Quake .map in Valve 220 format.",
+                "    The input file to be processed. Must be a Quake .map in either classic",
+                "    QuakeEd or Valve 220 formats.",
                 "",
                 "  output [optional]",
                 "    The file to output after processing. Defaults to input.temp.map.",
