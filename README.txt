@@ -73,17 +73,24 @@ Using instances
 
 First, you'll need to make the func_instance entity available in your editor.
 
-Included in the 'extra' directory is an FGD you can load into Jackhammer, or any
-other editor that supports the same FGD format. TrenchBroom is not among them,
-but a TB-ready entity definition can be found in func_instance.fgd. Open the
-file in a text editor, copy the TrenchBroom section into
+Included in the 'extra' directory are two files to help with this. Users of
+Jackhammer can just add func_instance.fgd to the Game Data Files list in the
+Tools|Options "Game Profiles" tab.
+
+If you prefer TrenchBroom, you'll need to do a little extra work: at the bottom
+of func_instance.fgd is a TB-ready entity definition. Copy the block into
 
     TrenchBroom/Resources/Defs/Quake.fgd
 
 and remove the leading '//' comment tokens. Restart TrenchBroom and you should
-have a new entity in the context menu's Create Point Entity|Func section. Please
-do note that I haven't extensively tested my entity definition block with
-TrenchBroom! Comments and suggestions welcome.
+have a new entity in the context menu's Create Point Entity|Func section.
+
+Finally, anyone using NetRadiant will be able to make use of func_instance.ent,
+which can simply be copied into the q1.game/id1 directory of your installation.
+
+Please do note that I haven't been able to extensively test the use of these
+entity definitions in TrenchBroom or NetRadiant! Comments, suggestions, and of
+course bug reports are always welcome.
 
 Next is compiler setup.
 
