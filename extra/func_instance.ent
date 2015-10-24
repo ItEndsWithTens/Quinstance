@@ -13,8 +13,7 @@ Keys:
 </integer>
 
 <string key="replace01" name="Replace">A replacement parameter that takes the form of $variable value. For example, set this field to $brightness 750 and any occurrence of $brightness inside the Filename map will be replaced with 750 when the instances are collapsed.</string>
-<string key="replace01" name="Replace">Materials can also be replaced, with #. For example, setting a replacement variable to #SKY1 DOPEFISH will retexture any surfaces in the Filename map, replacing the classic purple sky with everyone's favorite goofy fish.</string>
-<string key="replace02" name="Replace"></string>
+<string key="replace02" name="Replace">Materials can also be replaced, with #. For example, setting a replacement variable to #SKY1 DOPEFISH will retexture any surfaces in the Filename map, replacing the classic purple sky with everyone's favorite goofy fish.</string>
 <string key="replace03" name="Replace"></string>
 <string key="replace04" name="Replace"></string>
 <string key="replace05" name="Replace"></string>
