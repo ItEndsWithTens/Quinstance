@@ -330,8 +330,11 @@ namespace Quinstance
                             break;
                         case "-d":
                         case "--fgd":
-                            foreach (string fgd in args[++i].Split(','))
+                            foreach (string fgd in args[++i].Split(',')) {
+                                if (!File.Exists(Path.GetFullPath(fgd)))
+                                    throw new System.ArgumentException("FGD " + fgd + " not found!");
                                 fgds.Add(Path.GetFullPath(fgd));
+                            }
                             break;
                         case "-k":
                         case "--keep":
