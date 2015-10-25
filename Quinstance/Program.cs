@@ -483,7 +483,6 @@ namespace Quinstance
 
             List<string> lines_out = new List<string>();
             for (int i = 0; i < lines_in.Count; ++i) {
-                string line_in = lines_in[i],
                 string line_in = Quinstance.Util.StripComment(lines_in[i]),
                        trimmed = line_in.Trim();
 
