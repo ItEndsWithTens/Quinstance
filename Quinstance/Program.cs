@@ -482,7 +482,35 @@ namespace Quinstance
                 lines_in = ConvertQuakeEdTo220(lines_in);
 
             List<string> lines_out = new List<string>();
+
+            // For VMFII to work, worldspawn needs to be given the block name
+            // 'world' in our output, not just 'entity' like every other block
+            // that contains key/value pairs. Since there's only one worldspawn,
+            // and since a robust way to know the classname of the current block
+            // will require major changes, a separate loop will do for now.
+            int start = 0;
             for (int i = 0; i < lines_in.Count; ++i) {
+                start = i + 1;
+
+                string line_in = Quinstance.Util.StripComment(lines_in[i]),
+                       trimmed = line_in.Trim();
+
+                if (trimmed == "")
+                    continue; 
+                
+                Regex regex_indent = new Regex(@"(\s*?)\S+");
+                string indent = regex_indent.Match(line_in).Groups[1].ToString();
+
+                if (trimmed == "{") {
+                    lines_out.Add(indent + "world");
+                    lines_out.Add(line_in);
+                    break;
+                } else {
+                    lines_out.Add(line_in);
+                }
+            }
+
+            for (int i = start; i < lines_in.Count; ++i) {
                 string line_in = Quinstance.Util.StripComment(lines_in[i]),
                        trimmed = line_in.Trim();
 
@@ -494,10 +522,7 @@ namespace Quinstance
 
                 if (trimmed == "{") {
                     string line_next = lines_in[i + 1].Trim();
-                    if (line_next.EndsWith("\"worldspawn\"") && line_next.StartsWith("\"classname\"")) {
-                        lines_out.Add(indent + "world");
-                        lines_out.Add(indent + line_in);
-                    } else if (line_next.StartsWith("\"")) {
+                    if (line_next.StartsWith("\"")) {
                         lines_out.Add(indent + "entity");
                         lines_out.Add(indent + line_in);
                     } else if (line_next.StartsWith("(")) {
