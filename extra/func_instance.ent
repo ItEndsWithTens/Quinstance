@@ -4,7 +4,7 @@ An automatically updated prefab. Set Filename to the name of a .map containing g
 
 Keys:
 <real3 key="angles" name="Pitch Yaw Roll">This entity's orientation.</real3>
-<string key="targetname" name="Fixup Name">A name that will, depending on the fixup style, be prepended or appended to any entities. If a Fixup Style is set, but a Fixup Name is not provided, an automatically generated name will be used. Keep in mind that even with fixup enabled and a name set, you can selectively avoid fixup by giving entities names starting with @.</string>
+<string key="targetname" name="Fixup Name">A name that will, depending on the fixup style, be prepended or appended to any entities. If a Fixup Style is set, but a Fixup Name is not provided, an automatically generated name will be used. Keep in mind that even with fixup enabled and a name set, you can selectively avoid fixup by giving entities names starting with the @ symbol.</string>
 <string key="file" name="Filename">A path, relative to the current map file's location, pointing to the map you'd like to copy in.</string>
 <integer key="fixup_style" name="Fixup Style">The method by which entity names will be fixed up. Default 0.
 0 = Prefix
