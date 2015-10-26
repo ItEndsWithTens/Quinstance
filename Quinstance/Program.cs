@@ -204,15 +204,18 @@ namespace Quinstance
 
         static void CollapseInstances(string map_out, List<string> fgds)
         {
+            string exe_dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+                   vmfii_abs = exe_dir + sep + "lib" + sep + "vmfii" + sep + "vmfii.exe";
+
             Process vmfii = new Process();
             vmfii.StartInfo.Arguments = map_out + " --fgd \"" + String.Join(",", fgds.ToArray()) + '"';
             vmfii.StartInfo.CreateNoWindow = true;
-            vmfii.StartInfo.FileName = "lib/vmfii/vmfii.exe";
+            vmfii.StartInfo.FileName = vmfii_abs;
             vmfii.StartInfo.RedirectStandardError = true;
             vmfii.StartInfo.RedirectStandardInput = true;
             vmfii.StartInfo.RedirectStandardOutput = true;
             vmfii.StartInfo.UseShellExecute = false;
-            vmfii.StartInfo.WorkingDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            vmfii.StartInfo.WorkingDirectory = exe_dir;
 
             Console.WriteLine("Starting VMFII:\n");
             vmfii.Start();
