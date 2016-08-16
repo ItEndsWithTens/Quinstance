@@ -233,14 +233,13 @@ namespace Quinstance
             // The order of planes here is specifically designed to match up
             // with the texture orientation results provided by editors and
             // compilers. First -Z and its normal-flipped counterpart, then -X
-            // and its alternative, but then switching signs to +Y since we're
-            // using a right-handed coordinate system.
+            // and its alternative, and finally -Y.
             List<Plane> cardinals = new List<Plane>() {
                 new Plane("(0 0 0) (1 0 0) (0 -1 0)"), // XY, normal points toward -Z
                 new Plane("(0 0 0) (1 0 0) (0 -1 0)", true),
                 new Plane("(0 0 0) (0 1 0) (0 0 -1)"), // YZ, normal points toward -X
                 new Plane("(0 0 0) (0 1 0) (0 0 -1)", true),
-                new Plane("(0 0 0) (1 0 0) (0 0 -1)"), // ZX, normal points toward +Y
+                new Plane("(0 0 0) (1 0 0) (0 0 -1)"), // ZX, normal points toward -Y
                 new Plane("(0 0 0) (1 0 0) (0 0 -1)", true)};
 
             for (int i = 0; i < lines_in.Count; ++i) {
