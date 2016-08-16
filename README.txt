@@ -104,15 +104,40 @@ The --fgd parameter needs to be a comma separated list of the FGDs your map
 depends on, func_instance.fgd excluded (VMFII already knows what instances are
 and how to process them).
 
-Then add a second compile step, immediately after BSP, with the following:
+In order to keep your original input file untouched, Quinstance collapses your
+instances into a new intermediate file. It has the extension .temp.map instead
+of .map, and it's this file that's used for the first stages of compilation.
+
+Because of this, you'll need to change your compile process such that calls to
+your CSG and/or BSP executable make reference to input.temp.map instead of just
+input.map. Also, if your process expects a file to be produced as a result of
+running BSP, it will also need to reference the .temp addition.
+
+For example, in Jackhammer, the command
+
+    $csg_exe $bspdir/$file.$ext
+
+would become instead
+
+    $csg_exe $bspdir/$file.temp.$ext
+
+The same holds true for $bsp_exe, with the extra concern of needing to change
+the "Ensure File Post-exists" option to
+
+    $bspdir/$file.temp.prt
+
+since the various files created by BSP haven't been renamed yet.
+
+Add a second compile step, immediately after BSP, with the following:
 
     quinstance.exe input.map --cleanup
 
-The instance resolution process produces an intermediate .map file, which is the
-one that actually gets compiled. Running Quinstance with --cleanup will delete
-this intermediate, then rename the associated .bsp, .prt, .lin, and .pts files
-as appropriate. The BSP log will not be renamed, so QBSP executables that append
-to existing logs can do so, and old build output won't be lost.
+As a result of the compiling the aforementioned intermediate file, BSP outputs a
+group of files with ".temp" in their names. This step runs Quinstance in cleanup
+mode, which deletes the intermediate .map file and renames the associated .bsp,
+.prt, .lin, and .pts files as appropriate. The BSP log is the exception, and
+will not be renamed, so QBSP executables that append to existing logs can do so,
+and old build output won't be lost.
 
 Finally is actually using the entities.
 
