@@ -74,7 +74,7 @@ Using instances
 First, you'll need to make the func_instance entity available in your editor.
 
 Included in the 'extra' directory are two files to help with this. Users of
-Jackhammer can just add func_instance.fgd to the Game Data Files list in the
+J.A.C.K. can just add func_instance.fgd to the Game Data Files list in the
 Tools|Options "Game Profiles" tab.
 
 If you prefer TrenchBroom, you'll need to do a little extra work: at the bottom
@@ -113,7 +113,7 @@ your CSG and/or BSP executable make reference to input.temp.map instead of just
 input.map. Also, if your process expects a file to be produced as a result of
 running BSP, it will also need to reference the .temp addition.
 
-For example, in Jackhammer, the command
+For example, in J.A.C.K., the command
 
     $csg_exe $bspdir/$file.$ext
 
