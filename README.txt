@@ -1,4 +1,4 @@
-Quinstance 0.2.1
+Quinstance 0.2.2
 ================
 
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
@@ -189,6 +189,10 @@ engine, see https://developer.valvesoftware.com/wiki/Func_instance
 Changes
 -------
 
+0.2.2 - August 16th, 2016
+  Improve configuration instructions
+  Update VMFII
+  
 0.2.1 - October 25th, 2015
   Fix worldspawn handling for some maps
   Fix calling VMFII in Linux/OSX
