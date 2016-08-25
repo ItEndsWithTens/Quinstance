@@ -18,7 +18,7 @@ namespace Quinstance
 
         static char sep = Path.DirectorySeparatorChar;
 
-        static string exe_name = Assembly.GetEntryAssembly().GetName().Name,
+        static string exe_name = Assembly.GetAssembly(typeof(Program)).GetName().Name,
                       tmp_dir = exe_name + "_temp",
                       tmp_path = Path.GetTempPath() + tmp_dir + sep,
                       tld;
@@ -212,7 +212,7 @@ namespace Quinstance
 
         static void CollapseInstances(string map_out, List<string> fgds)
         {
-            string exe_dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
+            string exe_dir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Program)).Location),
                    vmfii_abs = exe_dir + sep + "lib" + sep + "vmfii" + sep + "vmfii.exe";
 
             Process vmfii = new Process();
