@@ -40,19 +40,25 @@ namespace Quinstance
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
                 PrintUsage();
-#if DEBUG
-                Console.Write("Press any key to exit: ");
-                Console.ReadKey();
-#endif
+
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    Console.Write("Press any key to exit: ");
+                    Console.ReadKey();
+                }
+
                 return;
             }
             catch (InvalidDataException e) {
                 Console.WriteLine(e.Message);
                 Console.WriteLine();
-#if DEBUG
-                Console.Write("Press any key to exit: ");
-                Console.ReadKey();
-#endif
+
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    Console.Write("Press any key to exit: ");
+                    Console.ReadKey();
+                }
+
                 return;
             }
 
@@ -154,10 +160,12 @@ namespace Quinstance
             } else {
                 Console.WriteLine("Keeping temp files in " + tmp_path + '!');
             }
-#if DEBUG
-            Console.Write("Press any key to exit:");
-            Console.ReadKey();
-#endif
+
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                Console.Write("Press any key to exit: ");
+                Console.ReadKey();
+            }
         }
 
         static void CleanUp(string map_in)
