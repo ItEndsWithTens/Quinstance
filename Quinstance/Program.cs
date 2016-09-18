@@ -178,7 +178,8 @@ namespace Quinstance
                    temp_bsp = temp + ".bsp",
                    temp_lin = temp + ".lin",
                    temp_prt = temp + ".prt",
-                   temp_pts = temp + ".pts";
+                   temp_pts = temp + ".pts",
+                   temp_texinfo = temp + ".texinfo";
 
             Console.Write("Cleaning up...");
 
@@ -207,6 +208,12 @@ namespace Quinstance
             if (File.Exists(temp_pts)) {
                 File.Delete(temp_pts.Replace(".temp.pts", ".pts"));
                 File.Move(temp_pts, temp_pts.Replace(".temp.pts", ".pts"));
+            }
+
+            if (File.Exists(temp_texinfo))
+            {
+                File.Delete(temp_pts.Replace(".temp.texinfo", ".texinfo"));
+                File.Move(temp_pts, temp_pts.Replace(".temp.texinfo", ".texinfo"));
             }
 
             Console.WriteLine("done!");
