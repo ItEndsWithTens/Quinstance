@@ -13,12 +13,12 @@
 // robert.martens@gmail.com
 // @ItEndsWithTens
 //
-// October 18th, 2015
+// September 18th, 2016
 
 
 // Jackhammer
 //
-// JH is the editor I use most often, and version 1.1.700 is where I've done
+// J.A.C.K. is the editor I use most, and version 1.1.1064 is where I've done
 // most of my testing so far. Other editors may or may not be able to load this
 // file, so please be prepared for failure!
 
@@ -51,6 +51,12 @@
 	replace10(string) : "Replace" : : "If you need more than ten replacements, don't forget you can turn off SmartEdit (if applicable) and add keys manually: replace11, replace12, etc."
 ]
 
+@SolidClass = func_placeholder : "Placeholder geometry, to be removed with the --remove_entities option " +
+  "of Quinstance 0.3.0 and later."
+[
+]
+
+
 
 // TrenchBroom
 //
@@ -80,4 +86,8 @@
 //	replace08(string) : "Replace" : ""
 //	replace09(string) : "Replace" : ""
 //	replace10(string) : "Replace" : ""
+//]
+//
+//@SolidClass = func_placeholder : "Placeholder geometry, to be removed with the --remove_entities option of Quinstance 0.3.0 and later."
+//[
 //]

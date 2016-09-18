@@ -1,4 +1,4 @@
-Quinstance 0.2.2
+Quinstance 0.3.0
 ================
 
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
@@ -51,6 +51,10 @@ Usage
       -t, --tmpdir [optional]
         Specify the directory in which to store temporary files. Defaults to the
         user's temp directory.
+
+      -r, --remove_entities [optional]
+        A comma-separated list of entities to remove from all input files. Allows
+        placeholder geometry in editors which don't display instance contents.
 
 
 Background
@@ -148,6 +152,20 @@ Quinstance and compiled, a copy of the other map's contents will have appeared
 where the func_instance once was, offset from the entity by the same amount they
 were offset from their map's origin.
 
+No editors currently display instance contents, so in your viewports you'll see
+only a point entity representing each func_instance. To make editing easier, you
+can build simple placeholder geometry and tie it to a brush entity that then
+gets removed by Quinstance.
+
+A basic definition for such an entity, func_placeholder, is provided by the
+included FGD and ENT files, but in some editors you can also manually change an
+entity's classname. You can use any name you want, actually, as long as it's
+unique and not shared with entities you want to keep. Then just add
+
+  --remove_entities func_placeholder
+
+to your Quinstance command line and those will be removed from the final output.
+
 
 func_instance
 -------------
@@ -186,13 +204,38 @@ For more information about func_instances as they're implemented in the Source
 engine, see https://developer.valvesoftware.com/wiki/Func_instance
 
 
+func_placeholder
+----------------
+
+A brush entity for placeholder geometry, to make mapping easier in editors that
+don't show func_instance contents. This classname is only a sample: Quinstance
+will remove all entities matching its --remove_entities parameter, which to be
+clear is a comma separated list.
+
+For example, if you tied some temporary brushwork to func_placeholder, and want
+to remove it, you could try this:
+
+  quinstance input.map --fgd quake.fgd --remove_entities func_placeholder
+
+But now let's say you ignored func_placeholder, and defined your own by manually
+editing a brush entity's classname. Let's say you chose func_greybox, for the
+sake of demonstration. You also want to remove all grunts from your map for some
+reason, and use a shorter command line as well. In that case, this would do:
+
+  quinstance input.map -f quake.fgd -r func_greybox,monster_army
+
+
 Changes
 -------
+
+0.3.0 - September 18th, 2016
+  Fix FGD preprocessing for certain input
+  Add entity removal, to allow placeholder geometry
 
 0.2.2 - August 16th, 2016
   Improve configuration instructions
   Update VMFII
-  
+
 0.2.1 - October 25th, 2015
   Fix worldspawn handling for some maps
   Fix calling VMFII in Linux/OSX

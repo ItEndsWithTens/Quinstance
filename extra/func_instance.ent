@@ -24,4 +24,8 @@ Keys:
 <string key="replace10" name="Replace">If you need more than ten replacements, don't forget you can add keys manually: replace11, replace12, etc.</string>
 
 </point>
+
+<group name="func_placeholder">
+Placeholder geometry, to be removed with the --remove_entities option of Quinstance 0.3.0 and later.
+</group>
 </classes>
