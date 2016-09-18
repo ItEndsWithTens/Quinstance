@@ -27,6 +27,8 @@ namespace Quinstance
             { "dirs", new List<string>() }, { "files", new List<string>() }
         };
 
+        static List<string> placeholders = new List<string>();
+
         static void Main(string[] args)
         {
             List<string>
@@ -354,6 +356,10 @@ namespace Quinstance
                         case "--tmpdir":
                             tmp_path = args[++i];
                             break;
+                        case "-r":
+                        case "--remove_entities":
+                            placeholders = args[++i].Split(',').ToList();
+                            break;
                         default:
                             throw new System.ArgumentException("Unrecognized parameter!");
                     }
@@ -609,7 +615,7 @@ namespace Quinstance
                 deletables["dirs"].Add(path_intermediate);
 
             using (StreamWriter sw = File.CreateText(vmf_out))
-                foreach (string line in lines_out)
+                foreach (string line in RemoveEntities(lines_out, placeholders))
                     sw.WriteLine(line);
             if (!deletables["files"].Contains(vmf_out))
                 deletables["files"].Add(vmf_out);
@@ -647,6 +653,10 @@ namespace Quinstance
                 "  -t, --tmpdir [optional]",
                 "    Specify the directory in which to store temporary files. Defaults to the",
                 "    user's temp directory.",
+                "",
+                "  -r, --remove_entities [optional]",
+                "    A comma-separated list of entities to remove from all input files. Allows",
+                "    placeholder geometry in editors which don't display instance contents.",
                 "" };
 
             foreach (string line in help)
@@ -708,6 +718,83 @@ namespace Quinstance
             using (StreamWriter sw = File.CreateText(map_in.Replace(".temp.vmf", ".temp.map")))
                 foreach (string line in lines_out)
                     sw.WriteLine(line);
+        }
+
+        static List<string> RemoveEntities(List<string> lines_in, List<string> classnames)
+        {
+            var lines_out = new List<string>();
+
+            var i = 0;
+
+            while (i < lines_in.Count) {
+                string line = lines_in[i],
+                       trimmed = line.Trim();
+
+                if (trimmed != "entity") {
+                    lines_out.Add(line);
+                    ++i;
+                    continue;
+                } else {
+                    List<string> remaining = lines_in.GetRange(i, lines_in.Count - i);
+
+                    if (classnames.Contains(GetClassName(remaining))) {
+                        i += GetBlockLength(remaining);
+                    } else {
+                        lines_out.Add(line);
+                        ++i;
+                        continue;
+                    }
+                }
+            }
+
+            return lines_out;
+        }
+
+        static int GetBlockLength(List<string> lines)
+        {
+            var length = 0;
+
+            var open_braces = 0;
+
+            // Find the opening of the block, assuming it begins at lines[0] but
+            // making no assumptions about the placement of the first brace.
+            for (var i = 0; i < lines.Count && open_braces == 0; ++i) {
+                if (lines[i].Trim() == "{") {
+                    length = i + 1;
+                    open_braces = 1;
+                }
+            }
+
+            // Then just loop through the rest of the provided lines, looking
+            // for the closing brace to match the entity's opening.
+            for (var i = length; i < lines.Count; ++i) {
+                if (lines[i].Trim() == "{")
+                    open_braces++;
+                else if (lines[i].Trim() == "}")
+                    open_braces--;
+
+                if (open_braces == 0) {
+                    length = i + 1;
+                    break;
+                }
+            }
+
+            return length;
+        }
+
+        static string GetClassName(List<string> lines_in)
+        {
+            var classname = "";
+
+            foreach (var line in lines_in) {
+                if (line.Trim().Contains("classname")) {
+                    var regex = new Regex("\".*?\".*?\"(.*?)\"");
+                    classname = regex.Match(line).Groups[1].ToString();
+                    break;
+                }
+            }
+
+            return classname;
         }
     }
 
