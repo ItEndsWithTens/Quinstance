@@ -1,0 +1,5 @@
+@PointClass size(-8 -8 -8, 8 8 8) flags(Light) base(Targetname, Light) iconsprite("sprites/light.spr") = 
+     light: "Invisible lightsource"
+     [
+         spawnflags(Flags) = [1 : "Initially dark" : 0]
+     ]

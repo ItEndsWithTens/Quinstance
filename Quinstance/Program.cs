@@ -371,7 +371,7 @@ namespace Quinstance
                 throw new System.ArgumentException("Input file not found!");
         }
 
-        static void PreprocessFgd(string fgd)
+        public static void PreprocessFgd(string fgd)
         {
             List<string> lines_out = new List<string>();
 
@@ -380,10 +380,13 @@ namespace Quinstance
                 while (!sr.EndOfStream) {
                     string line_in = sr.ReadLine();
 
-                    // Lines with a class name but no equals sign will trip up
-                    // VMFII, so we combine lines until we have one.
+                    // Lines that begin a class definition, but don't contain
+                    // the actual classname, will trip up VMFII. It expects the
+                    // equals sign, followed by said classname, to be on one
+                    // line, and the easiest way to ensure that is to combine
+                    // everything through the opening bracket.
                     if (line_in.Trim().StartsWith("@"))
-                        while (!line_in.Contains('='))
+                        while (!line_in.Contains('['))
                             line_in += sr.ReadLine();
 
                     // At the moment VMFII can't handle lowercase class names, so
@@ -424,10 +427,10 @@ namespace Quinstance
                             continue;
                         }
 
-                        String leftover = "";
+                        string leftover = "";
                         if (trimmed.Contains('[')) {
                             if (!trimmed.StartsWith("["))
-                                lines_out.Add(line_in.Substring(0, line_in.IndexOf('[') - 1));
+                                lines_out.Add(line_in.Substring(0, line_in.IndexOf('[')));
                             lines_out.Add("[");
                             if (!trimmed.EndsWith("[")) {
                                 int start = line_in.IndexOf('[') + 1;
@@ -444,7 +447,7 @@ namespace Quinstance
                             continue;
                         } else {
                             if (!leftover.StartsWith("]"))
-                                lines_out.Add(leftover.Substring(0, leftover.IndexOf(']') - 1));
+                                lines_out.Add(leftover.Substring(0, leftover.IndexOf(']')));
                             lines_out.Add("]");
                             if (!trimmed.EndsWith("]")) {
                                 int start = line_in.IndexOf(']') + 1;

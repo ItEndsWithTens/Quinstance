@@ -1,0 +1,9 @@
+@PointClass light() iconsprite("editor/light.vmt") base(Targetname, Light) sphere(_fifty_percent_distance) sphere(_zero_percent_distance) = light :
+       "An invisible omnidirectional lightsource."
+   [
+       target(target_destination) : "Entity To Point At" : : "The name of an entity in the map that the spotlight will point at. This will override the spotlight's angles."
+   
+       spawnflags(Flags) = [1 : "Initially dark" : 0]
+   
+       _distance(integer) : "Maximum Distance" : 0 : "This is the distance that light is allowed to cast, in inches."
+   ]
