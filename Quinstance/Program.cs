@@ -173,47 +173,27 @@ namespace Quinstance
         static void CleanUp(string map_in)
         {
             string path = Path.GetDirectoryName(map_in),
-                   temp = path + sep + Path.GetFileNameWithoutExtension(map_in) + ".temp",
-                   temp_map = temp + ".map",
-                   temp_bsp = temp + ".bsp",
-                   temp_lin = temp + ".lin",
-                   temp_prt = temp + ".prt",
-                   temp_pts = temp + ".pts",
-                   temp_texinfo = temp + ".texinfo";
-
-            Console.Write("Cleaning up...");
-
-            if (File.Exists(temp_map))
-                File.Delete(temp_map);
+                   temp = path + sep + Path.GetFileNameWithoutExtension(map_in) + ".temp";
 
             // The only file I don't process here is the log, since that would
             // delete old logs with every new compile. Leaving it where it is
             // lets QBSP simply append, which can be useful for troubleshooting.
+            var extensions = new List<string>() { ".map", ".bsp", ".lin", ".prt", ".pts", ".texinfo" };
 
-            if (File.Exists(temp_bsp)) {
-                File.Delete(temp_bsp.Replace(".temp.bsp", ".bsp"));
-                File.Move(temp_bsp, temp_bsp.Replace(".temp.bsp", ".bsp"));
-            }
+            Console.Write("Cleaning up...");
 
-            if (File.Exists(temp_lin)) {
-                File.Delete(temp_lin.Replace(".temp.lin", ".lin"));
-                File.Move(temp_lin, temp_lin.Replace(".temp.lin", ".lin"));
-            }
+            if (File.Exists(temp + ".map"))
+                File.Delete(temp + ".map");
 
-            if (File.Exists(temp_prt)) {
-                File.Delete(temp_prt.Replace(".temp.prt", ".prt"));
-                File.Move(temp_prt, temp_prt.Replace(".temp.prt", ".prt"));
-            }
-
-            if (File.Exists(temp_pts)) {
-                File.Delete(temp_pts.Replace(".temp.pts", ".pts"));
-                File.Move(temp_pts, temp_pts.Replace(".temp.pts", ".pts"));
-            }
-
-            if (File.Exists(temp_texinfo))
+            foreach (var extension in extensions)
             {
-                File.Delete(temp_pts.Replace(".temp.texinfo", ".texinfo"));
-                File.Move(temp_pts, temp_pts.Replace(".temp.texinfo", ".texinfo"));
+                string renamable = temp + extension;
+
+                if (File.Exists(renamable))
+                {
+                    File.Delete(renamable.Replace(".temp" + extension, extension));
+                    File.Move(renamable, renamable.Replace(".temp" + extension, extension));
+                }
             }
 
             Console.WriteLine("done!");
