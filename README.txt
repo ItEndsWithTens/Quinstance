@@ -25,7 +25,7 @@ robert.martens@gmail.com
 Usage
 -----
 
-    quinstance.exe input [output] -d FGD [-c] [-k] [-t TMPDIR]
+    quinstance.exe input [output] -d FGD [-c] [-k] [-t TMPDIR] [-r ENTITY,...]
 
     Linux/OS X users will need to add 'mono ' to the head of their command line.
 
