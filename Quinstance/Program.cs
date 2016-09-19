@@ -182,9 +182,6 @@ namespace Quinstance
 
             Console.Write("Cleaning up...");
 
-            if (File.Exists(temp + ".map"))
-                File.Delete(temp + ".map");
-
             foreach (var extension in extensions)
             {
                 string renamable = temp + extension;
