@@ -1,4 +1,4 @@
-Quinstance 0.3.0
+Quinstance 0.3.1
 ================
 
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
