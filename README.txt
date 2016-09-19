@@ -1,4 +1,4 @@
-Quinstance 0.3.1
+Quinstance 0.3.2
 ================
 
 A wrapper around VMFInstanceInserter, enabling the use of func_instances in
@@ -227,6 +227,13 @@ reason, and use a shorter command line as well. In that case, this would do:
 
 Changes
 -------
+
+0.3.2 - September 19th, 2016
+  Fix overwriting input under some circumstances
+
+0.3.1 - September 19th, 2016
+  Fix .texinfo cleanup
+  Add missing --remove_entities usage info
 
 0.3.0 - September 18th, 2016
   Fix FGD preprocessing for certain input
