@@ -175,14 +175,20 @@ namespace Quinstance
             string path = Path.GetDirectoryName(map_in),
                    temp = path + sep + Path.GetFileNameWithoutExtension(map_in) + ".temp";
 
+            // The temporary map file needs to be deleted separately, otherwise
+            // the loop below would overwrite the input file with the collapsed
+            // version if you compiled in the same directory.
+            if (File.Exists(temp + ".map"))
+                File.Delete(temp + ".map");
+
             // The only file I don't process here is the log, since that would
             // delete old logs with every new compile. Leaving it where it is
             // lets QBSP simply append, which can be useful for troubleshooting.
-            var extensions = new List<string>() { ".map", ".bsp", ".lin", ".prt", ".pts", ".texinfo" };
+            var renamables = new List<string>() { ".bsp", ".lin", ".prt", ".pts", ".texinfo" };
 
             Console.Write("Cleaning up...");
 
-            foreach (var extension in extensions)
+            foreach (var extension in renamables)
             {
                 string renamable = temp + extension;
 
